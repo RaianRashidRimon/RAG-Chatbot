@@ -12,15 +12,26 @@ A **Retrieval-Augmented Generation (RAG)** chatbot that answers questions from P
 
 1. Clone the repo
 
-    
+       git clone https://github.com/RaianRashidRimon/RAG-Chatbot.git    
+and open the repo in Visual Studio
 
-1. Install the dependecies
+2. Install the dependecies
 
        pip install -r requirements.txt
    
-3. Get your API key (paid or free) from Google/OpenAI/Meta(Llama)/Xai
-4. Create .env file and paste
+4. Get your API key (paid or free) from Google/OpenAI/Meta(Llama)/Xai
+5. Create .env file and paste
 
         api key = {your api key that youve got}
    
-5. Open the  
+6. On the terminal run the app by writing
+
+       streamlit run app.py
+
+## Tech Stack
+- Streamlit (UI)
+- Google Gemini 2.5-Flash (LLM)
+- HuggingFace al-MiniLM-L6-v2 (Embeddings)
+- Chroma (Vector Database)
+- LangChain (Backend Framework)
+- PyPDFLoader (PDF Loader)
