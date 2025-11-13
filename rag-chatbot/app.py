@@ -13,7 +13,8 @@ import os
 
 
 load_dotenv()
-api_key = os.getenv("your api key")
+## create a '.env' file on the project folder and write " api key = {your actual api key} "
+api_key = os.getenv("api key") ## -> paste your api key variable from .env file
 
 
 st.set_page_config(page_title="RAG Chatbot", layout="wide")
