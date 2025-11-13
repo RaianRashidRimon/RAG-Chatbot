@@ -13,7 +13,7 @@ import os
 
 
 load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
+api_key = os.getenv("your api key")
 
 
 st.set_page_config(page_title="RAG Chatbot", layout="wide")
@@ -43,7 +43,7 @@ with st.sidebar:
             
             ## gemini llm
             llm = ChatGoogleGenerativeAI(
-                model="gemini-2.5-flash",
+                model="gemini-2.5-flash", ## -> you can add any gemini model here paid or free.
                 google_api_key=api_key,
                 temperature=0,
                 convert_system_message_to_human = True
@@ -59,7 +59,6 @@ with st.sidebar:
             Answer:"""
             prompt = PromptTemplate.from_template(template)
             
-            # Modern chain using LCEL (LangChain Expression Language)
             def format_docs(docs):
                 return "\n\n".join(doc.page_content for doc in docs)
             
@@ -84,7 +83,7 @@ if st.session_state.get("processed"):
     if question:
         with st.spinner("Thinking...."):
             answer = st.session_state.qa_chain.invoke(question)
-            sources = st.session_state.retriever.invoke(question)  # Fixed this line
+            sources = st.session_state.retriever.invoke(question)
         
         st.markdown(f"**Answer:** {answer}")
         
