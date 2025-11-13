@@ -13,7 +13,7 @@ A **Retrieval-Augmented Generation (RAG)** chatbot that answers questions from P
 1. Clone the repo
 
        git clone https://github.com/RaianRashidRimon/RAG-Chatbot.git    
-and open the repo in Visual Studio
+and open the _**rag-chatbot**_ folder in Visual Studio
 
 2. Install the dependecies
 
@@ -22,7 +22,7 @@ and open the repo in Visual Studio
 4. Get your API key (paid or free) from Google/OpenAI/Meta(Llama)/Xai
 5. Create .env file and paste
 
-        api key = {your api key that youve got}
+        api key = {your actual api key}
    
 6. On the terminal run the app by writing
 
