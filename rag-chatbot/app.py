@@ -17,9 +17,9 @@ load_dotenv()
 api_key = os.getenv("api key") ## -> paste your api key variable from .env file
 
 
-st.set_page_config(page_title="RAG Chatbot", layout="wide")
-st.title("Company policy chatbot")
-st.markdown("Upload a policy PDF and ask any questions")
+st.set_page_config(page_title="Chatbot", layout="wide")
+st.title("RAG-based Chatbot")
+st.markdown("Upload any PDF and ask any questions regarding the information on the PDF")
 
 with st.sidebar:
     st.header("Upload document")
@@ -79,8 +79,8 @@ with st.sidebar:
             st.success("PDF processed! Ask questions below.")
         os.unlink(tmp_path)
 
-if st.session_state.get("processed"):
-    question = st.text_input("Ask about the policy:")
+if st.session_state.get("Processed"):
+    question = st.text_input("Ask anything:")
     if question:
         with st.spinner("Thinking...."):
             answer = st.session_state.qa_chain.invoke(question)
