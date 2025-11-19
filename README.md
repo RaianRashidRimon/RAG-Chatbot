@@ -1,4 +1,4 @@
-# RAG Chatbot
+# 🤖 RAG Chatbot
 A **Retrieval-Augmented Generation (RAG)** chatbot that answers questions from PDFs with **citations**, without any hallucination.
 
 ## Features
