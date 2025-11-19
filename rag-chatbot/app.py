@@ -51,8 +51,8 @@ with st.sidebar:
             )
             
             ## defining the prompt
-            template = """Use only the following context to answer the question. Absolutely no hallucination. 
-            If you don't know, say "Not found in policy."
+            template = """Use only the following context to answer the question and add few little extra words so the answer feels broader. No hallucination. 
+            If you don't know or find any information, say "Did not find any information regarding your query."
             Context:
             {context}
 
