@@ -40,7 +40,7 @@ with st.sidebar:
             embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
             ## vector database
             db = Chroma.from_documents(chunks, embeddings)
-            retriever = db.as_retriever(search_kwargs={"k": 2})
+            retriever = db.as_retriever(search_kwargs={"k": 3})
             
             ## gemini llm
             llm = ChatGoogleGenerativeAI(
@@ -51,7 +51,8 @@ with st.sidebar:
             )
             
             ## defining the prompt
-            template = """Use only the following context to answer the question and add few little extra words so the answer feels broader. No hallucination. 
+            template = """Use only the following context to answer the question and add few little extra words and sentences so the answer feels broader. No hallucination. 
+            You can add bullet points if needed but if only needed.  Make your answer comprehensible and use information from the context only. dont add anything that is not necessary just to make it broader.
             If you don't know or find any information, say "Did not find any information regarding your query."
             Context:
             {context}
