@@ -20,50 +20,46 @@ api_key = os.getenv("api key") ## -> paste your api key variable from .env file
 st.set_page_config(page_title="Chatbot", layout="wide")
 st.title("RAG-based Chatbot")
 st.markdown("Upload any PDF and ask any questions regarding the information on the PDF")
-
+ 
 with st.sidebar:
     st.header("Upload document")
     uploaded_file = st.file_uploader("Choose your file", type="pdf")
-    
+ 
     if st.button("Upload") and uploaded_file:
         with st.spinner("Processing your file...."):
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
                 tmp_file.write(uploaded_file.getvalue())
                 tmp_path = tmp_file.name
-                
+ 
             loader = PyPDFLoader(tmp_path)
             docs = loader.load()
             text_splitters = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
             chunks = text_splitters.split_documents(docs)
-            
-            ## embedding
+ 
             embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-            ## vector database
             db = Chroma.from_documents(chunks, embeddings)
             retriever = db.as_retriever(search_kwargs={"k": 3})
-            
-            ## gemini llm
+ 
             llm = ChatGoogleGenerativeAI(
-                model="gemini-2.5-flash", ## -> you can add any gemini model here paid or free.
+                model="gemini-2.5-flash",
                 google_api_key=api_key,
                 temperature=0,
-                convert_system_message_to_human = True
+                convert_system_message_to_human=True
             )
-            
-            ## defining the prompt
+ 
             template = """Use only the following context to answer the question and add few little extra words and sentences so the answer feels broader. No hallucination. 
-            You can add bullet points if needed but if only needed.  Make your answer comprehensible and use information from the context only. dont add anything that is not necessary just to make it broader.
+            You can add bullet points if needed but if only needed. Make your answer comprehensible and use information from the context only. dont add anything that is not necessary just to make it broader.
             If you don't know or find any information, say "Did not find any information regarding your query."
             Context:
             {context}
-
+ 
             Question: {question}
             Answer:"""
             prompt = PromptTemplate.from_template(template)
-            
+ 
             def format_docs(docs):
                 return "\n\n".join(doc.page_content for doc in docs)
-            
+ 
             qa_chain = (
                 {
                     "context": retriever | format_docs,
@@ -73,22 +69,22 @@ with st.sidebar:
                 | llm
                 | StrOutputParser()
             )
-            
+ 
             st.session_state.qa_chain = qa_chain
             st.session_state.retriever = retriever
-            st.session_state.processed = True
+            st.session_state.processed = True 
             st.success("PDF processed! Ask questions below.")
         os.unlink(tmp_path)
-
-if st.session_state.get("Processed"):
+ 
+if st.session_state.get("processed"):
     question = st.text_input("Ask anything:")
     if question:
         with st.spinner("Thinking...."):
             answer = st.session_state.qa_chain.invoke(question)
             sources = st.session_state.retriever.invoke(question)
-        
+ 
         st.markdown(f"**Answer:** {answer}")
-        
+ 
         with st.expander("Sources (Click to view)"):
             for i, doc in enumerate(sources):
                 page = doc.metadata.get('page', 0) + 1
