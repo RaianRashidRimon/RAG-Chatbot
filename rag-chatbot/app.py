@@ -20,7 +20,9 @@ import os
 
 
 load_dotenv()
-api_key = os.getenv("api key")
+## create a '.env' file on the project folder and write " api key = {your actual api key} "
+api_key = os.getenv("api key") ## -> paste your api key variable from .env file
+
 
 
 
@@ -53,7 +55,7 @@ with st.sidebar:
             retriever = db.as_retriever(search_kwargs={"k": 3})
 
             llm = ChatGoogleGenerativeAI(
-                model="gemini-2.5-flash",
+                model="gemini-2.5-flash-lite",
                 google_api_key=api_key,
                 temperature=0,
                 convert_system_message_to_human=True
