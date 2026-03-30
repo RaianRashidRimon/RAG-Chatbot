@@ -31,8 +31,6 @@ api_key = os.getenv("api key") ## -> paste your api key variable from .env file
 st.set_page_config(page_title="RAG Chatbot", layout="wide")
 st.title("RAG-based Chatbot")
 st.markdown("Upload any PDF and ask any questions regarding the information on the PDF")
-
-# initializing chat history on every run
 init_chat_history()
 
 with st.sidebar:
@@ -92,22 +90,41 @@ with st.sidebar:
 
 
 if st.session_state.get("processed"):
-    display_chat_history()
-    question = render_chat_input()
-
+    
+    # render previous messages from history
+    for message in st.session_state.chat_history:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+            if message["role"] == "assistant" and "sources" in message:
+                with st.expander("📄 Sources (click to view)"):
+                    for i, doc in enumerate(message["sources"]):
+                        page = doc.metadata.get('page', 0) + 1
+                        st.markdown(f"**Source {i+1} — Page {page}**")
+                        st.code(doc.page_content.strip()[:500] + "...", language="text")
+                        if i < len(message["sources"]) - 1:
+                            st.divider()
+    question = st.chat_input("Ask anything about your document...")
     if question:
-        add_message("user", question)
+        st.session_state.chat_history.append({"role": "user", "content": question})
         with st.chat_message("user"):
             st.markdown(question)
-
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 answer = st.session_state.qa_chain.invoke(question)
                 sources = st.session_state.retriever.invoke(question)
             st.markdown(answer)
-            display_sources(sources)
-         
-        add_message("assistant", answer)
+            with st.expander("📄 Sources (click to view)"):
+                for i, doc in enumerate(sources):
+                    page = doc.metadata.get('page', 0) + 1
+                    st.markdown(f"**Source {i+1} — Page {page}**")
+                    st.code(doc.page_content.strip()[:500] + "...", language="text")
+                    if i < len(sources) - 1:
+                        st.divider()
+        st.session_state.chat_history.append({
+            "role": "assistant",
+            "content": answer,
+            "sources": sources
+        })
 
 else:
-    st.info("⬅️ Upload a PDF from the sidebar to start chatting.")
+    st.info("Upload a PDF from the sidebar to get started")
