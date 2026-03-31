@@ -1,12 +1,5 @@
 import streamlit as st
 from langchain_community.document_loaders import PyPDFLoader
-from ui.chat import (
-    init_chat_history,
-    display_chat_history,
-    add_message,
-    render_chat_input,
-    display_sources
-)
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
@@ -31,7 +24,9 @@ api_key = os.getenv("api key") ## -> paste your api key variable from .env file
 st.set_page_config(page_title="RAG Chatbot", layout="wide")
 st.title("RAG-based Chatbot")
 st.markdown("Upload any PDF and ask any questions regarding the information on the PDF")
-init_chat_history()
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 
 with st.sidebar:
     st.header("Upload document")
