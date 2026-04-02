@@ -8,6 +8,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
+from core.chain import build_qa_chain
 import tempfile
 import os
 
@@ -47,35 +48,7 @@ with st.sidebar:
             db = Chroma.from_documents(chunks, embeddings)
             retriever = db.as_retriever(search_kwargs={"k": 3})
 
-            llm = ChatGoogleGenerativeAI(
-                model="gemini-2.5-flash-lite",
-                google_api_key=api_key,
-                temperature=0,
-                convert_system_message_to_human=True
-            )
-
-            template = """Use only the following context to answer the question and add few little extra words and sentences so the answer feels broader. No hallucination. 
-            You can add bullet points if needed but if only needed. Make your answer comprehensible and use information from the context only. dont add anything that is not necessary just to make it broader.
-            If you don't know or find any information, say "Did not find any information regarding your query."
-            Context:
-            {context}
-
-            Question: {question}
-            Answer:"""
-            prompt = PromptTemplate.from_template(template)
-
-            def format_docs(docs):
-                return "\n\n".join(doc.page_content for doc in docs)
-
-            qa_chain = (
-                {
-                    "context": retriever | format_docs,
-                    "question": RunnablePassthrough()
-                }
-                | prompt
-                | llm
-                | StrOutputParser()
-            )
+            qa_chain = build_qa_chain(retriever, api_key)
 
             st.session_state.qa_chain = qa_chain
             st.session_state.retriever = retriever
