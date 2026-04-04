@@ -78,8 +78,9 @@ if st.session_state.get("processed"):
             st.markdown(question)
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                answer = st.session_state.qa_chain.invoke(question)
-                sources = st.session_state.retriever.invoke(question)
+                result = st.session_state.qa_chain.invoke({"question": question})
+                answer = result["answer"]
+                sources = result["source_documents"]
             st.markdown(answer)
             with st.expander("📄 Sources (click to view)"):
                 for i, doc in enumerate(sources):
